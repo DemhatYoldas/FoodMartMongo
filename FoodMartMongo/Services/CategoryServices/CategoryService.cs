@@ -1,9 +1,24 @@
-﻿using FoodMartMongo.Dtos.CategoryDtos;
+﻿using AutoMapper;
+using FoodMartMongo.Dtos.CategoryDtos;
+using FoodMartMongo.Entities;
+using FoodMartMongo.Settings;
+using MongoDB.Driver;
 
 namespace FoodMartMongo.Services.CategoryServices
 {
     public class CategoryService : ICategoryService
     {
+        private readonly IMongoCollection<Category> _categoryCollection;
+        private readonly IMapper _mapper;
+
+        public CategoryService(IMapper mapper,IDatabaseSettings _databaseSettings)
+        {
+            var client = new MongoClient(_databaseSettings.ConnectionString);
+            var database = client.GetDatabase(_databaseSettings.DatabaseName);
+            _categoryCollection = database.GetCollection<Category>(_databaseSettings.CategoryCollectionName);
+            _mapper = mapper;
+        }
+
         public Task CreateCategoryDto(CreateCategoryDto createCategoryDto)
         {
             throw new NotImplementedException();
