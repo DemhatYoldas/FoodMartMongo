@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FoodMartMongo.Dtos.CustomerDtos;
 using FoodMartMongo.Entities;
+using FoodMartMongo.Settings;
 using MongoDB.Driver;
 
 namespace FoodMartMongo.Services.CustomerServices
@@ -9,6 +10,15 @@ namespace FoodMartMongo.Services.CustomerServices
     {
         private readonly IMongoCollection<Customer> _customerCollection;
         private readonly IMapper _mapper;
+
+        public CustomerService(IMapper mapper,IDatabaseSettings _databaseSettings)
+        {
+            var client = new MongoClient(_databaseSettings.ConnectionString);
+            var database = client.GetDatabase(_databaseSettings.DatabaseName);
+            _customerCollection = database.GetCollection<Customer>(_databaseSettings.CustomerCollectionName);
+            _mapper= mapper;
+        }
+
 
         public Task CreateCustomerAsync(CreateCustomerDto createCustomerDto)
         {
